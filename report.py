@@ -39,7 +39,7 @@ def preprocessing(df, K=4):
     # discretize some features
     df['lastownage'] = pd.cut(df.lastownage, bins=4)
     # remove entry with missing values
-    df.dropna()
+    df = df.dropna()
     # normalize continuous features
     continuous_class = ['kitsp', 'dist', 'walk',
         'livesp', 'totsp']
