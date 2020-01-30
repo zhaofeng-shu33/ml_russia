@@ -1,5 +1,19 @@
+import argparse
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn import linear_model
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import mean_squared_error
+
+def score(estimator, X_test, Y_test):
+    Y_predict = estimator.predict(X_test)
+    return mean_squared_error(Y_test, Y_predict)
+
+def linear_fit(X, Y):
+    reg = linear_model.LinearRegression()
+    scores = cross_val_score(reg, X, Y, cv=5, scoring=score)
+    return np.mean(scores)
 
 def read_raw_data():
     df = pd.read_csv('flats_moscow_a.csv')
@@ -28,6 +42,7 @@ def preprocessing(df, K=4):
         K: number of bins used to discretize lastownage
 
         Returns
+        -------
         X: array-like object, number of samples X number of features
         Y: predicted values
     '''
@@ -52,12 +67,27 @@ def preprocessing(df, K=4):
     # sigma as abnormal and remove them in later computation
     for i in continuous_class:
         _remove_abnormal(df, i)
+    # implement one-hot encoding
+    df_new = pd.get_dummies(df)
     # finally, we return the numpy array as data, price as label
-    return _get_data_and_label(df)
+    return _get_data_and_label(df_new)
+
+def model(X, Y):
+    '''
+    evaluated the model which using X to predict Y
+    return the MSE loss
+    '''
+    return linear_fit(X, Y)
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--quite', default=False, const=True, nargs='?')
+    args = parser.parse_args()
     df = read_raw_data()
     X, Y = preprocessing(df)
+    mse_loss = model(X, Y)
+    if not args.quite:
+        print(mse_loss)
 
 if __name__ == '__main__':
     main()
