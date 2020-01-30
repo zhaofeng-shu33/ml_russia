@@ -5,11 +5,9 @@ def read_raw_data():
     df = pd.read_csv('flats_moscow_a.csv')
     return df
 
-def _normalize(df_series):
+def _normalize(df, column_name):
     min_max_scaler = MinMaxScaler()
-    normalized_values = min_max_scaler.fit_transform(df_series.values)
-    normalized_df_series = pd.DataFrame(normalized_values)
-    return normalized_df_series
+    df[column_name] = min_max_scaler.fit_transform(df[[column_name]])
 
 def preprocessing(df, K=4):
     '''
@@ -26,9 +24,9 @@ def preprocessing(df, K=4):
     df.dropna()
     # normalize continuous features
     continuous_class = ['kitsp', 'dist', 'walk',
-        'livesp', 'totsp', 'lastownage']
+        'livesp', 'totsp']
     for i in continuous_class:
-        df[i] = _normalize(df[i])
+        _normalize(df, i)
     # assume each continuous features conforms to standard normal
     # distribution, treat observations with feature larger than 3
     # sigma as abnormal and remove them in later computation
