@@ -16,7 +16,7 @@ def linear_fit(X, Y):
     scores = cross_val_score(reg, X, Y, cv=5, scoring=score)
     return np.mean(scores)
 
-def svr_fit(X, Y, _C=100, _kernel='linear'):
+def svr_fit(X, Y, _C=80, _kernel='linear'):
     reg = svm.SVR(C=_C, kernel=_kernel)
     scores = cross_val_score(reg, X, Y, cv=5, scoring=score)
     return np.mean(scores)
