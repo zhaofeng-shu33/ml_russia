@@ -1,4 +1,5 @@
 import argparse
+import pickle
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
@@ -6,6 +7,15 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error
 from sklearn import svm
+
+def predict(csv_file, model_file):
+    # read the data from csv_file 
+    # and model from model_file
+    df = read_raw_data()
+    X, _ = preprocessing(df)
+    with open(model_file) as f:
+        reg = pickle.load(f)
+    return reg.predict(X)
 
 def score(estimator, X_test, Y_test):
     Y_predict = estimator.predict(X_test)
@@ -25,8 +35,11 @@ def _normalize(df, column_name):
     df[column_name] = min_max_scaler.fit_transform(df[[column_name]])
 
 def _get_data_and_label(df):
-    Y = df['price'].values
-    df.drop('price', axis=1, inplace=True)
+    if df.get('price').any():
+        Y = df['price'].values
+        df.drop('price', axis=1, inplace=True)
+    else:
+        Y = None
     df.drop(df.columns[0], axis=1, inplace=True)
     X = df.values
     return (X, Y)
