@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.decomposition import PCA
 from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error
@@ -40,7 +41,7 @@ def _get_data_and_label(df):
     X = df.values
     return (X, Y)
 
-def preprocessing(df, K=4):
+def preprocessing(df, K=4, n_components=30):
     '''
         Parameters
         ----------
@@ -75,7 +76,10 @@ def preprocessing(df, K=4):
     # implement one-hot encoding
     df_new = pd.get_dummies(df)
     # finally, we return the numpy array as data, price as label
-    return _get_data_and_label(df_new)
+    X, Y =  _get_data_and_label(df_new)
+    pca = PCA(n_components)
+    X = pca.fit_transform(X)
+    return (X, Y)
 
 def model(X, Y):
     '''
