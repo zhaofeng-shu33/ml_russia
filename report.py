@@ -5,6 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error
+from sklearn import svm
 
 def score(estimator, X_test, Y_test):
     Y_predict = estimator.predict(X_test)
@@ -12,6 +13,11 @@ def score(estimator, X_test, Y_test):
 
 def linear_fit(X, Y):
     reg = linear_model.LinearRegression(normalize=True)
+    scores = cross_val_score(reg, X, Y, cv=5, scoring=score)
+    return np.mean(scores)
+
+def svr_fit(X, Y, _C=100, _kernel='linear'):
+    reg = svm.SVR(C=_C, kernel=_kernel)
     scores = cross_val_score(reg, X, Y, cv=5, scoring=score)
     return np.mean(scores)
 
@@ -77,7 +83,7 @@ def model(X, Y):
     evaluated the model which using X to predict Y
     return the MSE loss
     '''
-    return linear_fit(X, Y)
+    return svr_fit(X, Y)
 
 def main():
     parser = argparse.ArgumentParser()
