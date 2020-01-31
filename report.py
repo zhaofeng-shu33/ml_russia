@@ -44,17 +44,17 @@ def preprocessing(df, K=4, n_components=30):
         Y: predicted values
     '''
     # convert columns with category data with right type
-    categorical_class = ['brick', 'metro', 'floor', 'code', 'owners',
+    categorical_class = ['brick', 'metro', 'code', 'owners',
                          'parking', 'rating', 'murder', 'class']
     for i in categorical_class:
         df[i] = df[i].astype('category')
-    # discretize some features
-    df['lastownage'] = pd.cut(df.lastownage, bins=K)
+    # remove unrelated features
+    df.drop('lastownage', axis=1, inplace=True)
     # remove entry with missing values
     df.dropna(inplace=True)
     df.reset_index(drop=True, inplace=True)
     # normalize continuous features
-    continuous_class = ['kitsp', 'dist', 'walk',
+    continuous_class = ['kitsp', 'dist', 'walk', 'floor',
                         'livesp', 'totsp']
     for i in continuous_class:
         _normalize(df, i)
