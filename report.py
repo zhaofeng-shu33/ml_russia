@@ -67,7 +67,6 @@ def preprocessing(df, K=4):
         'livesp', 'totsp']
     for i in continuous_class:
         _normalize(df, i)
-    _normalize(df, 'price')
     # assume each continuous features conforms to standard normal
     # distribution, treat observations with feature larger than 3
     # sigma as abnormal and remove them in later computation
