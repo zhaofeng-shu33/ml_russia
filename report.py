@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
-from sklearn import linear_model
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error
 from sklearn import svm
@@ -11,11 +10,6 @@ from sklearn import svm
 def score(estimator, X_test, Y_test):
     Y_predict = estimator.predict(X_test)
     return mean_squared_error(Y_test, Y_predict)
-
-def linear_fit(X, Y):
-    reg = linear_model.LinearRegression(normalize=True)
-    scores = cross_val_score(reg, X, Y, cv=5, scoring=score)
-    return np.mean(scores)
 
 def svr_fit(X, Y, _C=80, _kernel='linear'):
     reg = svm.SVR(C=_C, kernel=_kernel)
@@ -29,10 +23,6 @@ def read_raw_data():
 def _normalize(df, column_name):
     min_max_scaler = MinMaxScaler()
     df[column_name] = min_max_scaler.fit_transform(df[[column_name]])
-
-def _remove_abnormal(df, i):
-    # to do added
-    return
 
 def _get_data_and_label(df):
     Y = df['price'].values
@@ -68,11 +58,6 @@ def preprocessing(df, K=4, n_components=30):
         'livesp', 'totsp']
     for i in continuous_class:
         _normalize(df, i)
-    # assume each continuous features conforms to standard normal
-    # distribution, treat observations with feature larger than 3
-    # sigma as abnormal and remove them in later computation
-    for i in continuous_class:
-        _remove_abnormal(df, i)
     # implement one-hot encoding
     df_new = pd.get_dummies(df)
     # finally, we return the numpy array as data, price as label
