@@ -44,24 +44,24 @@ def preprocessing(df, K=4, n_components=30):
         Y: predicted values
     '''
     # convert columns with category data with right type
-    categorical_class = ['brick', 'metro', 'floor',
-        'code','owners', 'parking', 'rating', 'murder', 'class']
+    categorical_class = ['brick', 'metro', 'floor', 'code', 'owners',
+                         'parking', 'rating', 'murder', 'class']
     for i in categorical_class:
         df[i] = df[i].astype('category')
     # discretize some features
-    df['lastownage'] = pd.cut(df.lastownage, bins=4)
+    df['lastownage'] = pd.cut(df.lastownage, bins=K)
     # remove entry with missing values
     df.dropna(inplace=True)
     df.reset_index(drop=True, inplace=True)
     # normalize continuous features
     continuous_class = ['kitsp', 'dist', 'walk',
-        'livesp', 'totsp']
+                        'livesp', 'totsp']
     for i in continuous_class:
         _normalize(df, i)
     # implement one-hot encoding
     df_new = pd.get_dummies(df)
     # finally, we return the numpy array as data, price as label
-    X, Y =  _get_data_and_label(df_new)
+    X, Y = _get_data_and_label(df_new)
     pca = PCA(n_components)
     X = pca.fit_transform(X)
     return (X, Y)

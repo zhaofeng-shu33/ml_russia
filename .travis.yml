@@ -2,5 +2,7 @@ os: linux
 dist: xenial
 language: python
 python: 3.6
+before_script:
+ - python -m pylint report.py
 script:
  - python report.py
