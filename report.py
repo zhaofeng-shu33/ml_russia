@@ -11,7 +11,7 @@ def score(estimator, X_test, Y_test):
     return mean_squared_error(Y_test, Y_predict)
 
 def linear_fit(X, Y):
-    reg = linear_model.LinearRegression()
+    reg = linear_model.LinearRegression(normalize=True)
     scores = cross_val_score(reg, X, Y, cv=5, scoring=score)
     return np.mean(scores)
 
