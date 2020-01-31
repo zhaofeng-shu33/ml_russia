@@ -29,8 +29,8 @@ def _remove_abnormal(df, i):
 
 def _get_data_and_label(df):
     Y = df['price'].values
-    df.drop('price', axis=1)
-    df.drop(df.columns[0], axis=1)
+    df.drop('price', axis=1, inplace=True)
+    df.drop(df.columns[0], axis=1, inplace=True)
     X = df.values
     return (X, Y)
 
