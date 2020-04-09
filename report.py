@@ -3,7 +3,6 @@ import pickle
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.decomposition import PCA
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error
 from sklearn import svm
@@ -11,9 +10,9 @@ from sklearn import svm
 def predict(csv_file, model_file):
     # read the data from csv_file 
     # and model from model_file
-    df = read_raw_data()
-    X, _ = preprocessing(df)
-    with open(model_file) as f:
+    df = pd.read_csv(csv_file)
+    X, _ = preprocessing(df) # not necessary of the same scale
+    with open(model_file, 'rb') as f:
         reg = pickle.load(f)
     return reg.predict(X)
 
@@ -35,10 +34,10 @@ def _normalize(df, column_name):
     df[column_name] = min_max_scaler.fit_transform(df[[column_name]])
 
 def _get_data_and_label(df):
-    if df.get('price').any():
+    try:
         Y = df['price'].values
         df.drop('price', axis=1, inplace=True)
-    else:
+    except:
         Y = None
     df.drop(df.columns[0], axis=1, inplace=True)
     X = df.values
@@ -75,8 +74,6 @@ def preprocessing(df, K=4, n_components=30):
     df_new = pd.get_dummies(df)
     # finally, we return the numpy array as data, price as label
     X, Y = _get_data_and_label(df_new)
-    pca = PCA(n_components)
-    X = pca.fit_transform(X)
     return (X, Y)
 
 def model(X, Y):
