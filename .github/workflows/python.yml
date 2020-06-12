@@ -1,0 +1,13 @@
+on:
+  [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install
+      run: |
+        apt install python3-sklearn python3-pandas
+    - name: experiment
+      run: |
+        python3 report.py --help
